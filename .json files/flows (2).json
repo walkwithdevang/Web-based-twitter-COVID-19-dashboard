@@ -1,0 +1,320 @@
+[
+    {
+        "id": "5d42e761.eb5b38",
+        "type": "tab",
+        "label": "Tweet Dashboard",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "5e655441.40965c",
+        "type": "twitter in",
+        "z": "5d42e761.eb5b38",
+        "twitter": "",
+        "tags": "#COVID,#covid19,#COVID19,#Coronavirus,#SARSCoV2,#COVIDfoamed",
+        "user": "false",
+        "name": "TwitterIn",
+        "inputs": 0,
+        "x": 240,
+        "y": 120,
+        "wires": [
+            [
+                "4fa90cd.6e435f4",
+                "3ca66b1a.65a0d4",
+                "7453b8a6.727d78"
+            ]
+        ]
+    },
+    {
+        "id": "3ca66b1a.65a0d4",
+        "type": "debug",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "tweet.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "4fa90cd.6e435f4",
+        "type": "debug",
+        "z": "5d42e761.eb5b38",
+        "name": "msg.tweet details",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "tweet",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b3c2ff49.2a73d",
+        "type": "debug",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9f83cfd.d6f853",
+        "type": "sentiment",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "property": "payload",
+        "x": 200,
+        "y": 420,
+        "wires": [
+            [
+                "8ddeb552.a15188"
+            ]
+        ]
+    },
+    {
+        "id": "8ddeb552.a15188",
+        "type": "delay",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 400,
+        "y": 420,
+        "wires": [
+            [
+                "38422cbe.8a15e4",
+                "a9310654.620d28"
+            ]
+        ]
+    },
+    {
+        "id": "dc008a35.2a4168",
+        "type": "ui_gauge",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "group": "aaf4cc01.649b5",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Sentiment",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "-10",
+        "max": 10,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 900,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7047e92b.9373d8",
+        "type": "ui_text",
+        "z": "5d42e761.eb5b38",
+        "group": "aaf4cc01.649b5",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Tweet",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 810,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7453b8a6.727d78",
+        "type": "function",
+        "z": "5d42e761.eb5b38",
+        "name": "Remove URLS and replace #",
+        "func": "var tweet = msg.tweet.text;\nvar newtweet = tweet.replace(/#/g, \" Hash tag \");\n\n// regex from https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript\nmsg.payload = newtweet.replace( /(([a-z]+:\\/\\/)?(([a-z0-9\\-]+\\.)+([a-z]{2}|biz|com|co|edu|gov|info|net|org|ly))(:[0-9]{1,5})?(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\\s+|$)/gi, \"see short URL \" );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 420,
+        "y": 220,
+        "wires": [
+            [
+                "b3c2ff49.2a73d",
+                "9f83cfd.d6f853"
+            ]
+        ]
+    },
+    {
+        "id": "38422cbe.8a15e4",
+        "type": "change",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "sentiment.score",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 480,
+        "wires": [
+            [
+                "dc008a35.2a4168",
+                "38ddfbc6.1bb9e4"
+            ]
+        ]
+    },
+    {
+        "id": "a9310654.620d28",
+        "type": "change",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 400,
+        "wires": [
+            [
+                "7047e92b.9373d8"
+            ]
+        ]
+    },
+    {
+        "id": "38ddfbc6.1bb9e4",
+        "type": "ui_chart",
+        "z": "5d42e761.eb5b38",
+        "name": "",
+        "group": "f8676ce5.65d66",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Tweet Sentiment History",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "-10",
+        "ymax": "10",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": true,
+        "outputs": 1,
+        "x": 950,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aaf4cc01.649b5",
+        "type": "ui_group",
+        "z": "",
+        "name": "ANALYZER PANE",
+        "tab": "56b2c52c.8b934c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "f8676ce5.65d66",
+        "type": "ui_group",
+        "z": "",
+        "name": "Tweet Details",
+        "tab": "95fe98f6.814b78",
+        "order": 1,
+        "disp": true,
+        "width": "10"
+    },
+    {
+        "id": "56b2c52c.8b934c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "sentiment analyzer",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "95fe98f6.814b78",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Tweet Scoreboard",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
